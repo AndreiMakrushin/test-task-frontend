@@ -1,47 +1,79 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import { ref } from 'vue'
+
+const leftBlock = ref([
+  { id: 1, name: 'Shoes 1' },
+  { id: 2, name: 'Shoes 2' },
+  { id: 3, name: 'Shoes 3' },
+  { id: 4, name: 'Shoes 4' },
+  { id: 5, name: 'T-shirt 1' },
+  { id: 6, name: 'T-shirt 2' },
+  { id: 7, name: 'T-shirt 3' },
+  { id: 8, name: 'T-shirt 4' }
+])
+const rightBlock = ref([
+  { id: 11, name: 'Jacket 1' },
+  { id: 12, name: 'Jacket 2' },
+  { id: 13, name: 'Jacket 3' },
+  { id: 14, name: 'Jacket 4' },
+  { id: 15, name: 'Hoodie 1' },
+  { id: 16, name: 'Hoodie 2' },
+  { id: 17, name: 'Hoodie 3' },
+  { id: 18, name: 'Hoodie 4' }
+])
+
+const selectedLeft = ref([])
+const selectedRight = ref([])
+
+const removeItem = (array, item) => {
+  array.splice(array.findIndex(el => el.id === item.id), 1)
+}
+
+const pushItem = (source, destination, item, limit) => {
+  if (destination.value.length === limit) return;
+  destination.value.push(item);
+  removeItem(source, item)
+}
+
+const pushLeft = (item) => pushItem(leftBlock.value, selectedLeft, item, 6)
+const pushRight = (item) => pushItem(rightBlock.value, selectedRight, item, 1)
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+  <div>
+    <div class="blocks">
+      <ul>
+        <li v-for="item in selectedLeft" :key="item.id">{{ item.name }}</li>
+        <div>Добавлено {{ selectedLeft.length }} из 6</div>
+      </ul>
+      <ul>
+        <li v-for="item in selectedRight" :key="item.id">{{ item.name }}</li>
+      </ul>
     </div>
-  </header>
 
-  <main>
-    <TheWelcome />
-  </main>
+    <div class="blocks">
+      <ul>
+        <li v-for="item in leftBlock" :key="item.id" @click="pushLeft(item)">{{ item.name }}</li>
+      </ul>
+      <ul>
+        <li v-for="item in rightBlock" :key="item.id" @click="pushRight(item)">{{ item.name }}</li>
+      </ul>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
+.blocks {
+  display: flex;
+  flex-direction: row;
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+li {
+  margin: 15px;
 }
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+ul {
+  padding: 30px;
+  border: 2px solid black;
+  margin: 0 40px;
 }
 </style>
+
